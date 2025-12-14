@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CROP FUTURE FOR SAFETY LIFE</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root{
+      --glass: rgba(255,255,255,.10);
+      --glass-2: rgba(255,255,255,.14);
+      --stroke: rgba(255,255,255,.18);
+      --green: #22c55e;
+      --green-2: #16a34a;
+    }
+
+    /* Background */
+    .app-bg{
+      background-image:
+        linear-gradient(180deg, rgba(2,6,23,.65), rgba(2,6,23,.35) 45%, rgba(2,6,23,.72)),
+        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2400&q=70');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* Title animation: lively hide/show */
+    .title-flicker{
+      text-shadow:
+        0 0 18px rgba(34,197,94,.35),
+        0 0 55px rgba(34,197,94,.18);
+      animation: titlePulse 3.4s ease-in-out infinite;
+    }
+    .title-flicker .title-word{
+      display: inline-block;
+      animation: titleBlink 2.9s steps(14, end) infinite;
+    }
+    .title-flicker .title-word:nth-child(2){ animation-delay: .22s; }
+    .title-flicker .title-word:nth-child(3){ animation-delay: .44s; }
+    .title-flicker .title-word:nth-child(4){ animation-delay: .66s; }
+    .title-flicker .title-word:nth-child(5){ animation-delay: .88s; }
+
+    @keyframes titlePulse{
+      0%, 100%{ transform: translateY(0); filter: saturate(1); }
+      50%{ transform: translateY(-2px); filter: saturate(1.25); }
+    }
+    @keyframes titleBlink{
+      0%, 8%{ opacity: .18; transform: translateY(1px) scale(.995); filter: blur(.2px); }
+      10%, 82%{ opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+      84%, 100%{ opacity: .25; transform: translateY(1px) scale(.995); filter: blur(.2px); }
+    }
+
+    /* Glass panels */
+    .glass{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(10px);
+    }
+    .glass-strong{
+      background: var(--glass-2);
+      border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Category cards */
+    .cat-card{
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.22);
+      background-size: cover;
+      background-position: center;
+    }
+    .cat-card::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(2,6,23,.75), rgba(2,6,23,.20) 55%, rgba(2,6,23,.82));
+    }
+    .cat-card::after{
+      content: "";
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(circle at 20% 0%, rgba(34,197,94,.25), transparent 55%);
+      transform: rotate(8deg);
+      opacity: .95;
+      pointer-events: none;
+    }
+    .cat-card > *{ position: relative; }
+
+    /* Insects */
+    .insect-layer{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .insect{
+      position: absolute;
+      opacity: .92;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.28));
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    .insect svg{ width: 48px; height: 48px; }
+
+    @keyframes fly1{
+      0%   { transform: translate(-12vw, 58vh) rotate(5deg) scale(.85); }
+      15%  { transform: translate(12vw, 42vh) rotate(-8deg) scale(.92); }
+      35%  { transform: translate(38vw, 62vh) rotate(10deg) scale(.85); }
+      55%  { transform: translate(62vw, 38vh) rotate(-12deg) scale(.95); }
+      75%  { transform: translate(86vw, 55vh) rotate(7deg) scale(.88); }
+      100% { transform: translate(112vw, 30vh) rotate(-6deg) scale(.90); }
+    }
+    @keyframes fly2{
+      0%   { transform: translate(110vw, 22vh) rotate(-8deg) scale(.75); }
+      18%  { transform: translate(82vw, 14vh) rotate(12deg) scale(.82); }
+      38%  { transform: translate(60vw, 30vh) rotate(-14deg) scale(.78); }
+      58%  { transform: translate(34vw, 12vh) rotate(8deg) scale(.86); }
+      78%  { transform: translate(10vw, 26vh) rotate(-10deg) scale(.78); }
+      100% { transform: translate(-15vw, 10vh) rotate(6deg) scale(.82); }
+    }
+    @keyframes fly3{
+      0%   { transform: translate(-18vw, 18vh) rotate(0deg) scale(.70); }
+      25%  { transform: translate(20vw, 10vh) rotate(18deg) scale(.78); }
+      50%  { transform: translate(52vw, 22vh) rotate(-10deg) scale(.74); }
+      75%  { transform: translate(78vw, 8vh) rotate(14deg) scale(.80); }
+      100% { transform: translate(115vw, 16vh) rotate(-8deg) scale(.76); }
+    }
+    @keyframes hoverWings{
+      0%,100%{ transform: rotate(-8deg) scale(1); }
+      50%{ transform: rotate(8deg) scale(1.02); }
+    }
+
+    .fly-1{ animation: fly1 18s linear infinite; }
+    .fly-2{ animation: fly2 22s linear infinite; }
+    .fly-3{ animation: fly3 16s linear infinite; }
+    .wings{ transform-origin: 24px 24px; animation: hoverWings .22s ease-in-out infinite; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .title-flicker, .title-flicker .title-word, .fly-1, .fly-2, .fly-3, .wings{ animation: none !important; }
+      .app-bg{ background-attachment: scroll; }
+    }
+
+    /* Nice scroll */
+    ::-webkit-scrollbar{ width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
+    ::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); }
+
+    /* Focus */
+    .focus-ring:focus{ outline: none; box-shadow: 0 0 0 3px rgba(34,197,94,.35); }
+
+    /* Text selection */
+    ::selection{ background: rgba(34,197,94,.35); }
+  </style>
+</head>
+<body class="app-bg min-h-screen text-white">
+  <!-- Insect animations layer -->
+  <div class="insect-layer" aria-hidden="true">
+    <!-- Dragonfly -->
+    <div class="insect fly-1" style="top:0; left:0;">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="wings">
+          <path d="M8 24c12-10 20-10 26 0C22 36 14 36 8 24Z" fill="rgba(147,197,253,.75)"/>
+          <path d="M56 24c-12-10-20-10-26 0c12 12 20 12 26 0Z" fill="rgba(147,197,253,.75)"/>
+          <path d="M10 40c10-8 18-8 22 0c-10 10-16 10-22 0Z" fill="rgba(167,243,208,.70)"/>
+          <path d="M54 40c-10-8-18-8-22 0c10 10 16 10 22 0Z" fill="rgba(167,243,208,.70)"/>
+        </g>
+        <path d="M32 18c-4 0-7 3-7 7v5c0 2 1 4 2 5l-5 19h4l4-14 2 20h2l2-20 4 14h4l-5-19c1-1 2-3 2-5v-5c0-4-3-7-7-7Z" fill="rgba(34,197,94,.85)"/>
+        <circle cx="28" cy="24" r="2" fill="rgba(15,23,42,.9)"/>
+        <circle cx="36" cy="24" r="2" fill="rgba(15,23,42,.9)"/>
+      </svg>
+    </div>
+
+    <!-- Bee -->
+    <div class="insect fly-2" style="top:0; left:0; opacity:.88;">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="wings">
+          <path d="M18 22c6-7 12-7 18 0c-6 7-12 7-18 0Z" fill="rgba(226,232,240,.72)"/>
+          <path d="M28 22c6-7 12-7 18 0c-6 7-12 7-18 0Z" fill="rgba(226,232,240,.72)"/>
+        </g>
+        <ellipse cx="34" cy="36" rx="14" ry="10" fill="rgba(250,204,21,.92)"/>
+        <path d="M24 33h20M23 37h22M25 41h18" stroke="rgba(15,23,42,.85)" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="22" cy="35" r="6" fill="rgba(250,204,21,.92)"/>
+        <circle cx="20" cy="34" r="2" fill="rgba(15,23,42,.9)"/>
+        <path d="M18 30c-4-3-8-2-10 2" stroke="rgba(15,23,42,.75)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 29c-2-4 0-8 5-9" stroke="rgba(15,23,42,.75)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Ladybug -->
+    <div class="insect fly-3" style="top:0; left:0; opacity:.86;">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="38" r="16" fill="rgba(239,68,68,.88)"/>
+        <path d="M32 22c-6 0-10 4-10 9" stroke="rgba(15,23,42,.85)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M32 22c6 0 10 4 10 9" stroke="rgba(15,23,42,.85)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M32 22v32" stroke="rgba(15,23,42,.92)" stroke-width="3"/>
+        <circle cx="32" cy="24" r="7" fill="rgba(15,23,42,.9)"/>
+        <circle cx="26" cy="34" r="2.2" fill="rgba(15,23,42,.9)"/>
+        <circle cx="38" cy="36" r="2.2" fill="rgba(15,23,42,.9)"/>
+        <circle cx="28" cy="44" r="2.2" fill="rgba(15,23,42,.9)"/>
+        <circle cx="40" cy="46" r="2.2" fill="rgba(15,23,42,.9)"/>
+      </svg>
+    </div>
+
+    <!-- Butterfly (extra, subtle) -->
+    <div class="insect fly-1" style="top:0; left:0; animation-duration: 26s; opacity:.78;">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="wings">
+          <path d="M30 34c-14 4-20-6-16-16c10-2 18 4 16 16Z" fill="rgba(251,146,60,.55)"/>
+          <path d="M34 34c14 4 20-6 16-16c-10-2-18 4-16 16Z" fill="rgba(167,139,250,.55)"/>
+          <path d="M30 36c-12 8-18 0-14-10c8 0 14 2 14 10Z" fill="rgba(248,113,113,.45)"/>
+          <path d="M34 36c12 8 18 0 14-10c-8 0-14 2-14 10Z" fill="rgba(59,130,246,.40)"/>
+        </g>
+        <path d="M32 20c3 6 3 18 0 26" stroke="rgba(15,23,42,.85)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M30 18c-2-3-4-4-6-4" stroke="rgba(15,23,42,.75)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M34 18c2-3 4-4 6-4" stroke="rgba(15,23,42,.75)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <header class="relative z-10">
+    <div class="mx-auto max-w-6xl px-4 pt-10 pb-6">
+      <div class="glass-strong rounded-2xl p-6 md:p-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 class="title-flicker text-3xl md:text-5xl font-black tracking-tight text-green-400">
+              <span class="title-word">CROP</span>
+              <span class="title-word">FUTURE</span>
+              <span class="title-word">FOR</span>
+              <span class="title-word">SAFETY</span>
+              <span class="title-word">LIFE</span>
+            </h1>
+            <p class="mt-2 text-white/85 text-sm md:text-base leading-relaxed max-w-2xl">
+              Website tra cứu nhanh ngành <span class="font-semibold text-green-200">Khoa học Cây Trồng</span> – tổng hợp chủ đề sản phẩm & bài báo quốc tế (liên kết tra cứu Scholar) để tham khảo khi cần.
+            </p>
+          </div>
+
+          <div class="w-full md:w-auto">
+            <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+              <label class="sr-only" for="q">Tìm kiếm</label>
+              <input id="q" class="focus-ring w-full sm:w-[360px] rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder:text-white/55"
+                     placeholder="Tra cứu: tên mục, từ khóa bài báo, sản phẩm…" />
+              <label class="flex items-center gap-2 text-sm text-white/85 select-none">
+                <input id="searchAll" type="checkbox" class="accent-green-400" />
+                Tìm toàn bộ danh mục
+              </label>
+            </div>
+            <p id="searchHint" class="mt-2 text-xs text-white/70">Gợi ý: nhập “organic”, “hydroponic”, “rice”, “tomato”, “shrimp”…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button class="cat-card group text-left p-5 h-40" data-cat="foods"
+                style="background-image:url('https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1400&q=70');">
+          <div class="flex h-full flex-col justify-between">
+            <div>
+              <p class="text-xs text-white/80">Danh mục</p>
+              <h2 class="mt-1 text-xl font-extrabold tracking-wide">GREEN FOODS</h2>
+              <p class="mt-2 text-sm text-white/80">Cá – thịt – tôm sạch, nguồn gốc rõ ràng</p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-green-200">
+              <span class="inline-flex h-2 w-2 rounded-full bg-green-300 group-hover:animate-pulse"></span>
+              Mở tra cứu
+            </div>
+          </div>
+        </button>
+
+        <button class="cat-card group text-left p-5 h-40" data-cat="fruits"
+                style="background-image:url('https://images.unsplash.com/photo-1592570080765-1eab4dc3f87d?auto=format&fit=crop&w=1400&q=70');">
+          <div class="flex h-full flex-col justify-between">
+            <div>
+              <p class="text-xs text-white/80">Danh mục</p>
+              <h2 class="mt-1 text-xl font-extrabold tracking-wide">GREEN FRUITS</h2>
+              <p class="mt-2 text-sm text-white/80">Trái cây hữu cơ – sinh thái – vườn siêu sạch</p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-green-200">
+              <span class="inline-flex h-2 w-2 rounded-full bg-green-300 group-hover:animate-pulse"></span>
+              Mở tra cứu
+            </div>
+          </div>
+        </button>
+
+        <button class="cat-card group text-left p-5 h-40" data-cat="vegetables"
+                style="background-image:url('https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?auto=format&fit=crop&w=1400&q=70');">
+          <div class="flex h-full flex-col justify-between">
+            <div>
+              <p class="text-xs text-white/80">Danh mục</p>
+              <h2 class="mt-1 text-xl font-extrabold tracking-wide">GREEN VEGETABLES</h2>
+              <p class="mt-2 text-sm text-white/80">Rau hữu cơ – thủy canh – rau rừng</p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-green-200">
+              <span class="inline-flex h-2 w-2 rounded-full bg-green-300 group-hover:animate-pulse"></span>
+              Mở tra cứu
+            </div>
+          </div>
+        </button>
+
+        <button class="cat-card group text-left p-5 h-40" data-cat="fields"
+                style="background-image:url('https://images.unsplash.com/photo-1463123081488-789f998ac9c4?auto=format&fit=crop&w=1400&q=70');">
+          <div class="flex h-full flex-col justify-between">
+            <div>
+              <p class="text-xs text-white/80">Danh mục</p>
+              <h2 class="mt-1 text-xl font-extrabold tracking-wide">GREEN FIELDS</h2>
+              <p class="mt-2 text-sm text-white/80">Rice / Corn / Wheat organic – hướng canh tác bền vững</p>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-green-200">
+              <span class="inline-flex h-2 w-2 rounded-full bg-green-300 group-hover:animate-pulse"></span>
+              Mở tra cứu
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10">
+    <div class="mx-auto max-w-6xl px-4 pb-10">
+      <section class="glass rounded-2xl p-5 md:p-6">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 id="activeCatTitle" class="text-lg md:text-xl font-extrabold">Tra cứu danh mục</h3>
+            <p id="activeCatDesc" class="text-sm text-white/80 mt-1">Chọn một danh mục bên trên để bắt đầu.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button id="btnReset" class="focus-ring rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 px-4 py-2 text-sm">
+              Xóa tìm kiếm
+            </button>
+            <button id="btnRandom" class="focus-ring rounded-xl bg-green-500/20 hover:bg-green-500/30 border border-green-300/30 px-4 py-2 text-sm text-green-100">
+              Gợi ý ngẫu nhiên
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left: item list -->
+          <aside class="lg:col-span-4">
+            <div class="glass-strong rounded-2xl p-4">
+              <div class="flex items-center justify-between gap-3">
+                <h4 class="font-bold">Mục tra cứu</h4>
+                <span id="itemCount" class="text-xs text-white/70">0 mục</span>
+              </div>
+              <div id="itemList" class="mt-3 max-h-[420px] overflow-auto space-y-2 pr-1">
+                <div class="text-sm text-white/70">Chưa có dữ liệu hiển thị.</div>
+              </div>
+            </div>
+
+            <div id="globalResultsWrap" class="hidden mt-4 glass-strong rounded-2xl p-4">
+              <div class="flex items-center justify-between gap-3">
+                <h4 class="font-bold">Kết quả (toàn bộ danh mục)</h4>
+                <span id="globalCount" class="text-xs text-white/70">0 kết quả</span>
+              </div>
+              <div id="globalResults" class="mt-3 max-h-[320px] overflow-auto space-y-2 pr-1"></div>
+            </div>
+          </aside>
+
+          <!-- Right: details -->
+          <section class="lg:col-span-8">
+            <div class="glass-strong rounded-2xl p-4 md:p-5">
+              <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <h4 id="detailTitle" class="text-xl font-extrabold">Chọn một mục để xem chi tiết</h4>
+                  <p id="detailMeta" class="mt-1 text-sm text-white/75">Bài báo quốc tế: liên kết tra cứu Google Scholar • Thông tin sản phẩm: tham khảo</p>
+                </div>
+                <div class="flex gap-2">
+                  <button id="tabArticles" class="focus-ring rounded-xl px-4 py-2 text-sm border border-white/20 bg-white/10">Bài báo nghiên cứu</button>
+                  <button id="tabProducts" class="focus-ring rounded-xl px-4 py-2 text-sm border border-white/20 bg-white/5">Thông tin sản phẩm</button>
+                </div>
+              </div>
+
+              <div id="detailBody" class="mt-4 space-y-3">
+                <div class="text-sm text-white/75">
+                  Chọn danh mục → chọn mục → xem bài báo & sản phẩm.
+                </div>
+              </div>
+
+              <div class="mt-5 rounded-xl bg-white/5 border border-white/15 p-4">
+                <p class="text-xs text-white/70 leading-relaxed">
+                  Lưu ý: Nội dung bài báo trong trang là gợi ý từ khóa & đường dẫn tra cứu nhanh. Khi cần trích dẫn chính xác, hãy mở Google Scholar/nhà xuất bản để kiểm tra DOI, năm, tác giả.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <footer class="mt-8">
+        <div class="glass rounded-2xl p-6 text-center">
+          <p class="text-lg md:text-xl font-extrabold tracking-wide text-green-200">GREEN AGRICULTURE FOR LIFE</p>
+          <p class="mt-2 text-xs md:text-sm text-white/70">Cùng xây dựng nông nghiệp xanh – an toàn – bền vững.</p>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const DATA = {
+      foods: {
+        name: "GREEN FOODS",
+        desc: "Nhóm thực phẩm xanh: thủy sản & thịt sạch – hỗ trợ chuỗi cung ứng an toàn.",
+        heroKeywords: ["traceability", "food safety", "antibiotic residue", "sustainable feed"],
+        items: [
+          {
+            name: "CÁ THIÊN NHIÊN",
+            tags: ["wild fish", "ecosystem", "food safety"],
+            overview: "Tra cứu mô hình khai thác bền vững, truy xuất nguồn gốc và kiểm soát tồn dư.",
+            articles: [
+              a("Traceability systems for aquatic foods and consumer trust", "Food Control", 2022, ["traceability", "aquatic foods"]),
+              a("Monitoring heavy metals and microplastics in wild-caught fish", "Science of The Total Environment", 2021, ["microplastics", "heavy metals"]),
+              a("Ecosystem-based fisheries management: outcomes and indicators", "Fish and Fisheries", 2020, ["EBFM", "indicators"]) 
+            ],
+            products: [
+              p("Cá thiên nhiên (tham khảo)", "Khai thác/nuôi sinh thái", ["Kiểm soát dư lượng", "Bảo quản lạnh"], "Ăn tươi – chế biến", "Ưu tiên nguồn có truy xuất và chứng nhận vùng khai thác."),
+              p("Fillet cá đông lạnh", "Chuỗi lạnh", ["HACCP (tham khảo)", "Nhiệt độ -18°C"], "Tiện lợi chế biến", "Chọn nhà cung cấp công bố chỉ tiêu an toàn thực phẩm.")
+            ]
+          },
+          {
+            name: "THỊT SẠCH",
+            tags: ["clean meat", "antibiotic", "animal welfare"],
+            overview: "Tra cứu quy trình chăn nuôi an toàn sinh học, giảm kháng sinh, nâng cao phúc lợi động vật.",
+            articles: [
+              a("Reducing antimicrobial use in livestock: interventions and impacts", "Lancet Planetary Health", 2021, ["antimicrobial", "livestock"]),
+              a("Foodborne pathogens in meat supply chains: risk assessment", "Trends in Food Science & Technology", 2020, ["pathogens", "risk"]),
+              a("Sustainable livestock systems: environmental and health trade-offs", "Agricultural Systems", 2019, ["sustainability", "LCA"]) 
+            ],
+            products: [
+              p("Thịt heo/bò sạch (tham khảo)", "Trang trại an toàn sinh học", ["Không tồn dư kháng sinh (theo công bố)", "Kiểm dịch"], "Bữa ăn gia đình", "Xem thông tin kiểm dịch, ngày giết mổ, nhiệt độ bảo quản."),
+              p("Sản phẩm chế biến (xúc xích/giò)", "Nhà máy chế biến", ["HACCP/ISO 22000 (tham khảo)", "Ghi nhãn rõ ràng"], "Tiện lợi", "Ưu tiên ít phụ gia, minh bạch thành phần.")
+            ]
+          },
+          {
+            name: "TÔM ĐỒNG",
+            tags: ["shrimp", "rice-shrimp", "salinity"],
+            overview: "Tra cứu mô hình tôm – lúa, quản lý chất lượng nước, giảm hóa chất.",
+            articles: [
+              a("Rice–shrimp farming systems: productivity and resilience", "Aquaculture", 2022, ["integrated farming", "resilience"]),
+              a("Water quality management in shrimp ponds: key parameters", "Reviews in Aquaculture", 2020, ["water quality", "pond"]),
+              a("Biofloc technology for shrimp: performance and sustainability", "Aquaculture Reports", 2021, ["biofloc", "sustainability"]) 
+            ],
+            products: [
+              p("Tôm đồng (tham khảo)", "Mô hình sinh thái", ["Không lạm dụng kháng sinh", "Kiểm soát kim loại nặng"], "Tươi sống/đông lạnh", "Ưu tiên vùng nuôi công bố quy trình & xét nghiệm định kỳ."),
+              p("Tôm khô truyền thống", "Chế biến", ["Hàm ẩm", "Không phẩm màu"], "Gia vị/ăn liền", "Kiểm tra phụ gia và điều kiện bảo quản." )
+            ]
+          }
+        ]
+      },
+      fruits: {
+        name: "GREEN FRUITS",
+        desc: "Nhóm trái cây: hữu cơ, sinh thái và đặc sản vườn siêu sạch – hướng đến chất lượng & an toàn.",
+        heroKeywords: ["postharvest", "residue", "biocontrol", "organic certification"],
+        items: [
+          {
+            name: "TRÁI CÂY HỮU CƠ",
+            tags: ["organic", "certification", "soil health"],
+            overview: "Tra cứu canh tác hữu cơ, phân bón hữu cơ, quản lý dịch hại sinh học và chứng nhận.",
+            articles: [
+              a("Organic fruit production: soil health and yield stability", "Agronomy for Sustainable Development", 2020, ["soil", "yield"]),
+              a("Biological control in organic orchards: strategies and constraints", "Biological Control", 2019, ["biocontrol", "orchard"]),
+              a("Pesticide residue mitigation in fruit supply chains", "Food Chemistry", 2021, ["residue", "supply chain"]) 
+            ],
+            products: [
+              p("Giỏ trái cây hữu cơ (tham khảo)", "Vườn hữu cơ", ["Chứng nhận (nếu có)", "Truy xuất QR"], "Quà tặng/tiêu dùng", "Ưu tiên sản phẩm có hồ sơ chứng nhận và vùng trồng."),
+              p("Nước ép hữu cơ", "Chế biến lạnh", ["Không chất bảo quản (theo công bố)", "Chuỗi lạnh"], "Dinh dưỡng", "Kiểm tra hạn dùng và điều kiện bảo quản.")
+            ]
+          },
+          {
+            name: "TRÁI CÂY SINH THÁI",
+            tags: ["agroecology", "biodiversity", "IPM"],
+            overview: "Tra cứu mô hình vườn sinh thái, tăng đa dạng sinh học, IPM và thiên địch.",
+            articles: [
+              a("Agroecological orchards: biodiversity benefits and pest suppression", "Ecological Applications", 2020, ["biodiversity", "pest"]),
+              a("Integrated pest management in tropical fruit systems", "Crop Protection", 2018, ["IPM", "tropical fruit"]),
+              a("Landscape complexity and natural enemies in orchards", "Journal of Applied Ecology", 2019, ["natural enemies", "landscape"]) 
+            ],
+            products: [
+              p("Trái cây sinh thái (tham khảo)", "Vườn đa canh", ["IPM", "Giảm thuốc BVTV"], "Tiêu dùng", "Hỏi nhà vườn về nhật ký canh tác & biện pháp sinh học."),
+              p("Combo trái cây theo mùa", "Chuỗi cung ứng địa phương", ["Tươi theo mùa", "Giảm phát thải vận chuyển"], "Tiết kiệm", "Ưu tiên mua theo mùa vụ để chất lượng tốt.")
+            ]
+          },
+          {
+            name: "ĐẶC SẢN VƯỜN SIÊU SẠCH",
+            tags: ["premium", "postharvest", "quality"],
+            overview: "Tra cứu tiêu chuẩn chất lượng, thu hoạch–bảo quản, kiểm soát an toàn & đóng gói.",
+            articles: [
+              a("Postharvest handling for tropical fruits: quality preservation", "Postharvest Biology and Technology", 2021, ["postharvest", "quality"]),
+              a("Cold chain management in fresh produce: metrics and outcomes", "Food Quality and Preference", 2020, ["cold chain", "fresh produce"]),
+              a("Non-chemical treatments to extend shelf-life of fruits", "Trends in Food Science & Technology", 2019, ["shelf-life", "non-chemical"]) 
+            ],
+            products: [
+              p("Đặc sản vườn (tham khảo)", "Vùng trồng đặc sản", ["Phân loại size", "Đóng gói chuẩn"], "Quà biếu", "Xem tiêu chuẩn đóng gói, tem truy xuất, quy cách vận chuyển."),
+              p("Sầu riêng tách múi cấp đông", "Chế biến", ["Nhiệt độ cấp đông", "Nguồn gốc"], "Tiện lợi", "Ưu tiên cơ sở có kiểm nghiệm vi sinh định kỳ.")
+            ]
+          }
+        ]
+      },
+      vegetables: {
+        name: "GREEN VEGETABLES",
+        desc: "Nhóm rau: hữu cơ, thủy canh và rau rừng – tập trung an toàn và dinh dưỡng.",
+        heroKeywords: ["hydroponics", "nitrate", "leafy greens", "food safety"],
+        items: [
+          {
+            name: "RAU HỮU CƠ",
+            tags: ["organic", "soil", "compost"],
+            overview: "Tra cứu kỹ thuật canh tác hữu cơ cho rau ăn lá, phân hữu cơ, quản lý sâu bệnh sinh học.",
+            articles: [
+              a("Organic vegetable systems: soil fertility and nutrient cycling", "Soil Biology & Biochemistry", 2019, ["fertility", "nutrients"]),
+              a("Pest management in organic vegetables: biopesticides and IPM", "Pest Management Science", 2020, ["biopesticides", "IPM"]),
+              a("Food safety in leafy greens: contamination pathways", "Comprehensive Reviews in Food Science and Food Safety", 2021, ["leafy greens", "safety"]) 
+            ],
+            products: [
+              p("Rau hữu cơ (tham khảo)", "Trang trại hữu cơ", ["Không thuốc BVTV tổng hợp (theo công bố)", "Rửa/khử khuẩn"], "Salad/nấu", "Xem chứng nhận (nếu có) và nhật ký canh tác."),
+              p("Combo rau theo tuần", "Giao hàng", ["Đóng gói", "Chuỗi lạnh"], "Tiện lợi", "Chọn nhà cung cấp công bố kiểm nghiệm nitrate/vi sinh.")
+            ]
+          },
+          {
+            name: "RAU THỦY CANH",
+            tags: ["hydroponic", "EC", "pH"],
+            overview: "Tra cứu công thức dinh dưỡng, kiểm soát EC/pH, an toàn nước và vi sinh.",
+            articles: [
+              a("Hydroponic leafy greens: nutrient solution optimization", "Scientia Horticulturae", 2020, ["hydroponic", "nutrients"]),
+              a("Microbial safety of hydroponic produce: risks and mitigation", "Food Microbiology", 2019, ["microbial safety", "hydroponics"]),
+              a("LED lighting strategies for indoor hydroponics", "Horticulture Research", 2021, ["LED", "indoor farming"]) 
+            ],
+            products: [
+              p("Rau thủy canh (tham khảo)", "Nhà màng/Nhà kính", ["Quy trình vệ sinh", "Nước đạt chuẩn"], "Ăn sống/nấu", "Quan tâm nguồn nước, vệ sinh máng & kiểm soát vi sinh."),
+              p("Rau baby (xà lách, cải)", "Thu hoạch sớm", ["Độ tươi", "Bao gói MAP (tham khảo)"], "Salad", "Bảo quản 4–8°C để giữ chất lượng.")
+            ]
+          },
+          {
+            name: "RAU RỪNG",
+            tags: ["wild edible plants", "biodiversity", "safety"],
+            overview: "Tra cứu nhận diện loài, an toàn độc tính, bảo tồn nguồn gen và khai thác bền vững.",
+            articles: [
+              a("Wild edible plants: nutritional potential and safety considerations", "Food Research International", 2019, ["wild plants", "nutrition"]),
+              a("Ethnobotany and sustainable harvesting of forest vegetables", "Journal of Ethnobiology and Ethnomedicine", 2020, ["ethnobotany", "harvesting"]),
+              a("Food safety of foraged greens: identification and contaminants", "Food Control", 2021, ["foraging", "contaminants"]) 
+            ],
+            products: [
+              p("Rau rừng (tham khảo)", "Thu hái/nuôi trồng", ["Nhận diện loài", "Vệ sinh"], "Món đặc sản", "Chỉ mua từ nguồn uy tín, tránh khu vực ô nhiễm/đường lớn."),
+              p("Rau rừng sấy khô", "Chế biến", ["Độ ẩm", "Bảo quản"], "Gia vị/trà", "Kiểm tra điều kiện sấy và công bố chất lượng.")
+            ]
+          }
+        ]
+      },
+      fields: {
+        name: "GREEN FIELDS",
+        desc: "Nhóm cây trồng đồng ruộng: rice/corn/wheat theo hướng organic & canh tác thông minh.",
+        heroKeywords: ["climate-smart", "soil carbon", "yield gap", "nitrogen"],
+        items: [
+          {
+            name: "RICE ORGANIC",
+            tags: ["rice", "organic", "methane"],
+            overview: "Tra cứu lúa hữu cơ, quản lý nước, dinh dưỡng và giảm phát thải CH₄.",
+            articles: [
+              a("Alternate wetting and drying in rice: yield and methane mitigation", "Field Crops Research", 2020, ["AWD", "methane"]),
+              a("Organic rice systems: soil carbon and productivity", "Agriculture, Ecosystems & Environment", 2019, ["soil carbon", "organic"]),
+              a("Rice IPM: natural enemies and reduced pesticide dependence", "Crop Protection", 2021, ["IPM", "natural enemies"]) 
+            ],
+            products: [
+              p("Gạo hữu cơ (tham khảo)", "Vùng lúa hữu cơ", ["Truy xuất lô", "Chỉ tiêu an toàn"], "Ăn hằng ngày", "Ưu tiên có công bố kiểm nghiệm (kim loại nặng/thuốc BVTV)."),
+              p("Cám gạo hữu cơ", "Phụ phẩm", ["Bảo quản chống oxy hóa", "Đóng gói"], "Thực phẩm/ mỹ phẩm", "Chú ý hạn dùng vì dầu cám dễ ôi.")
+            ]
+          },
+          {
+            name: "CORN ORANIC",
+            tags: ["maize", "organic", "mycotoxin"],
+            overview: "Tra cứu bắp hữu cơ, quản lý nấm bệnh và độc tố nấm (mycotoxin) trong bảo quản.",
+            articles: [
+              a("Mycotoxin risk in maize: management from field to storage", "Toxins", 2020, ["mycotoxin", "storage"]),
+              a("Nitrogen management in maize under sustainable systems", "Nutrient Cycling in Agroecosystems", 2019, ["nitrogen", "efficiency"]),
+              a("Climate impacts on maize yield: adaptation strategies", "Agricultural and Forest Meteorology", 2021, ["climate", "adaptation"]) 
+            ],
+            products: [
+              p("Bắp hữu cơ (tham khảo)", "Vùng trồng", ["Giảm hóa chất", "Kiểm soát aflatoxin"], "Luộc/nướng", "Bảo quản khô, tránh ẩm để giảm nguy cơ nấm."),
+              p("Bột bắp", "Chế biến", ["Kiểm soát vi sinh", "Bao gói"], "Làm bánh", "Chọn sản phẩm có công bố chỉ tiêu mycotoxin.")
+            ]
+          },
+          {
+            name: "WEET ORGANIC",
+            tags: ["wheat", "organic", "protein"],
+            overview: "Tra cứu lúa mì hữu cơ, chất lượng protein/gluten và quản lý sâu bệnh.",
+            articles: [
+              a("Organic wheat: grain protein, yield and management trade-offs", "European Journal of Agronomy", 2019, ["protein", "yield"]),
+              a("Wheat disease management with reduced fungicides", "Plant Pathology", 2020, ["disease", "fungicide reduction"]),
+              a("Soil health indicators under cereal-based rotations", "Geoderma", 2021, ["soil health", "rotation"]) 
+            ],
+            products: [
+              p("Hạt lúa mì hữu cơ (tham khảo)", "Vùng trồng", ["Độ ẩm", "Kiểm soát tạp chất"], "Ngũ cốc", "Lưu kho khô, kín để hạn chế mọt/nấm."),
+              p("Bột mì hữu cơ", "Xay xát", ["Tro bột", "Độ mịn"], "Làm bánh", "Xem loại bột (bread/pastry) theo nhu cầu.")
+            ]
+          }
+        ]
+      }
+    };
+
+    function scholarLink(query){
+      return `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
+    }
+    function a(title, journal, year, keywords){
+      const q = `${title} ${journal} ${year}`;
+      return { title, journal, year, keywords, link: scholarLink(q) };
+    }
+    function p(name, origin, standards, uses, notes){
+      return { name, origin, standards, uses, notes };
+    }
+
+    const els = {
+      q: document.getElementById('q'),
+      searchAll: document.getElementById('searchAll'),
+      activeCatTitle: document.getElementById('activeCatTitle'),
+      activeCatDesc: document.getElementById('activeCatDesc'),
+      itemList: document.getElementById('itemList'),
+      itemCount: document.getElementById('itemCount'),
+      detailTitle: document.getElementById('detailTitle'),
+      detailMeta: document.getElementById('detailMeta'),
+      detailBody: document.getElementById('detailBody'),
+      tabArticles: document.getElementById('tabArticles'),
+      tabProducts: document.getElementById('tabProducts'),
+      btnReset: document.getElementById('btnReset'),
+      btnRandom: document.getElementById('btnRandom'),
+      globalResultsWrap: document.getElementById('globalResultsWrap'),
+      globalResults: document.getElementById('globalResults'),
+      globalCount: document.getElementById('globalCount'),
+    };
+
+    let state = {
+      activeCat: 'foods',
+      activeItemIdx: 0,
+      activeTab: 'articles',
+      query: '',
+      searchAll: false,
+    };
+
+    function setActiveCat(key){
+      state.activeCat = key;
+      state.activeItemIdx = 0;
+      state.activeTab = 'articles';
+      render();
+      scrollToMain();
+    }
+
+    function scrollToMain(){
+      const main = document.querySelector('main');
+      if(!main) return;
+      main.scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+
+    function normalize(s){
+      return (s || "").toString().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');
+    }
+
+    function matchText(haystack, needle){
+      const h = normalize(haystack);
+      const n = normalize(needle);
+      return n.length ? h.includes(n) : true;
+    }
+
+    function categoryItems(catKey){
+      const cat = DATA[catKey];
+      if(!cat) return [];
+      let items = cat.items.slice();
+      if(state.query.trim()){
+        const q = state.query.trim();
+        items = items.filter(it => {
+          const inName = matchText(it.name, q);
+          const inTags = (it.tags || []).some(t => matchText(t, q));
+          const inOverview = matchText(it.overview, q);
+          const inArticles = (it.articles || []).some(ar => matchText(ar.title + ' ' + ar.journal + ' ' + ar.year + ' ' + (ar.keywords||[]).join(' '), q));
+          const inProducts = (it.products || []).some(pr => matchText(pr.name + ' ' + pr.origin + ' ' + (pr.standards||[]).join(' ') + ' ' + pr.uses + ' ' + pr.notes, q));
+          return inName || inTags || inOverview || inArticles || inProducts;
+        });
+      }
+      return items;
+    }
+
+    function globalSearchResults(){
+      const q = state.query.trim();
+      if(!q) return [];
+      const results = [];
+      for(const [catKey, cat] of Object.entries(DATA)){
+        for(let idx=0; idx<cat.items.length; idx++){
+          const it = cat.items[idx];
+          const blob = [
+            it.name,
+            it.overview,
+            (it.tags||[]).join(' '),
+            ...((it.articles||[]).map(ar => `${ar.title} ${ar.journal} ${ar.year} ${(ar.keywords||[]).join(' ')}`)),
+            ...((it.products||[]).map(pr => `${pr.name} ${pr.origin} ${(pr.standards||[]).join(' ')} ${pr.uses} ${pr.notes}`))
+          ].join(' | ');
+
+          if(matchText(blob, q)){
+            results.push({
+              catKey,
+              catName: cat.name,
+              itemIdx: idx,
+              itemName: it.name,
+              snippet: buildSnippet(blob, q)
+            });
+          }
+        }
+      }
+      return results.slice(0, 60);
+    }
+
+    function buildSnippet(text, q){
+      const t = text.replace(/\s+/g,' ').trim();
+      const nText = normalize(t);
+      const nQ = normalize(q);
+      const pos = nText.indexOf(nQ);
+      if(pos < 0) return t.slice(0, 120) + (t.length > 120 ? '…' : '');
+      const start = Math.max(0, pos - 40);
+      const end = Math.min(t.length, pos + 80);
+      return (start>0?'…':'') + t.slice(start, end) + (end<t.length?'…':'');
+    }
+
+    function setTab(tab){
+      state.activeTab = tab;
+      renderDetails();
+      renderTabs();
+    }
+
+    function renderTabs(){
+      const onA = state.activeTab === 'articles';
+      els.tabArticles.className = `focus-ring rounded-xl px-4 py-2 text-sm border border-white/20 ${onA ? 'bg-white/10' : 'bg-white/5 hover:bg-white/10'}`;
+      els.tabProducts.className = `focus-ring rounded-xl px-4 py-2 text-sm border border-white/20 ${!onA ? 'bg-white/10' : 'bg-white/5 hover:bg-white/10'}`;
+    }
+
+    function renderHeader(){
+      const cat = DATA[state.activeCat];
+      if(!cat) return;
+      els.activeCatTitle.textContent = `Tra cứu: ${cat.name}`;
+      const extra = cat.heroKeywords?.length ? ` Từ khóa gợi ý: ${cat.heroKeywords.join(', ')}.` : '';
+      els.activeCatDesc.textContent = `${cat.desc}${extra}`;
+    }
+
+    function renderItemList(){
+      const items = categoryItems(state.activeCat);
+      els.itemCount.textContent = `${items.length} mục`;
+
+      if(!items.length){
+        els.itemList.innerHTML = `<div class="text-sm text-white/75">Không tìm thấy mục nào phù hợp trong danh mục này.</div>`;
+        return;
+      }
+
+      // Map active selection (since filtering changes indices): keep by name
+      const cat = DATA[state.activeCat];
+      const current = cat.items[state.activeItemIdx];
+      let activeName = current?.name;
+      if(activeName && !items.some(x => x.name === activeName)){
+        // reset to first in filtered
+        activeName = items[0].name;
+        state.activeItemIdx = cat.items.findIndex(x => x.name === activeName);
+      }
+
+      els.itemList.innerHTML = items.map(it => {
+        const idx = cat.items.findIndex(x => x.name === it.name);
+        const isActive = idx === state.activeItemIdx;
+        const counts = `${it.articles?.length || 0} bài • ${it.products?.length || 0} SP`;
+        return `
+          <button data-idx="${idx}" class="focus-ring w-full text-left rounded-xl border px-3 py-3 transition ${isActive ? 'bg-green-500/18 border-green-300/35' : 'bg-white/5 hover:bg-white/10 border-white/15'}">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="font-bold">${escapeHtml(it.name)}</div>
+                <div class="mt-1 text-xs text-white/70">${escapeHtml(it.overview)}</div>
+                <div class="mt-2 flex flex-wrap gap-1">
+                  ${(it.tags||[]).slice(0,4).map(t => `<span class="text-[11px] rounded-full border border-white/15 bg-white/5 px-2 py-0.5 text-white/75">${escapeHtml(t)}</span>`).join('')}
+                </div>
+              </div>
+              <div class="text-xs text-white/70 whitespace-nowrap">${counts}</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      els.itemList.querySelectorAll('button[data-idx]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeItemIdx = Number(btn.getAttribute('data-idx'));
+          renderItemList();
+          renderDetails();
+        });
+      });
+    }
+
+    function renderDetails(){
+      const cat = DATA[state.activeCat];
+      const it = cat?.items?.[state.activeItemIdx];
+      if(!it){
+        els.detailTitle.textContent = 'Chọn một mục để xem chi tiết';
+        els.detailBody.innerHTML = `<div class="text-sm text-white/75">Không có dữ liệu.</div>`;
+        return;
+      }
+
+      els.detailTitle.textContent = it.name;
+      els.detailMeta.textContent = `${cat.name} • ${it.tags?.join(' · ') || 'Tra cứu'}`;
+
+      if(state.activeTab === 'articles'){
+        const list = (it.articles || []).map(ar => {
+          return `
+            <article class="rounded-2xl border border-white/15 bg-white/5 p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h5 class="font-bold leading-snug">${escapeHtml(ar.title)}</h5>
+                  <p class="mt-1 text-sm text-white/75">${escapeHtml(ar.journal)} • ${escapeHtml(String(ar.year))}</p>
+                  <div class="mt-2 flex flex-wrap gap-1">
+                    ${(ar.keywords || []).map(k => `<span class="text-[11px] rounded-full border border-green-300/25 bg-green-500/10 px-2 py-0.5 text-green-100/90">${escapeHtml(k)}</span>`).join('')}
+                  </div>
+                </div>
+                <a class="focus-ring shrink-0 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm hover:bg-white/15" target="_blank" rel="noopener" href="${ar.link}">
+                  Tra cứu Scholar
+                </a>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        els.detailBody.innerHTML = `
+          <div class="rounded-2xl border border-white/15 bg-white/5 p-4">
+            <p class="text-sm text-white/80"><span class="font-semibold">Tổng quan:</span> ${escapeHtml(it.overview)}</p>
+            ${state.query.trim() ? `<p class="mt-2 text-xs text-white/70">Đang lọc theo từ khóa: <span class="text-green-200 font-semibold">${escapeHtml(state.query.trim())}</span></p>` : ''}
+          </div>
+          <div class="space-y-3">${list || `<div class="text-sm text-white/75">Chưa có bài báo gợi ý.</div>`}</div>
+        `;
+      } else {
+        const list = (it.products || []).map(pr => {
+          return `
+            <div class="rounded-2xl border border-white/15 bg-white/5 p-4">
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                <div>
+                  <h5 class="font-bold">${escapeHtml(pr.name)}</h5>
+                  <p class="mt-1 text-sm text-white/75">Nguồn/Quy trình: ${escapeHtml(pr.origin)}</p>
+                  <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                    <div class="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <div class="text-xs text-white/70">Tiêu chuẩn/kiểm soát</div>
+                      <div class="mt-1 text-white/85">${escapeHtml((pr.standards || []).join(' • ') || '—')}</div>
+                    </div>
+                    <div class="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <div class="text-xs text-white/70">Mục đích sử dụng</div>
+                      <div class="mt-1 text-white/85">${escapeHtml(pr.uses || '—')}</div>
+                    </div>
+                  </div>
+                  <p class="mt-3 text-sm text-white/80"><span class="font-semibold">Ghi chú:</span> ${escapeHtml(pr.notes || '—')}</p>
+                </div>
+                <button class="copyBtn focus-ring rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm hover:bg-white/15" data-copy="${escapeHtmlAttr(pr.name + ' | ' + pr.origin + ' | ' + (pr.standards||[]).join(', ') + ' | ' + pr.uses + ' | ' + pr.notes)}">
+                  Sao chép
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        els.detailBody.innerHTML = `
+          <div class="rounded-2xl border border-white/15 bg-white/5 p-4">
+            <p class="text-sm text-white/80"><span class="font-semibold">Tổng quan:</span> ${escapeHtml(it.overview)}</p>
+            ${state.query.trim() ? `<p class="mt-2 text-xs text-white/70">Đang lọc theo từ khóa: <span class="text-green-200 font-semibold">${escapeHtml(state.query.trim())}</span></p>` : ''}
+          </div>
+          <div class="space-y-3">${list || `<div class="text-sm text-white/75">Chưa có thông tin sản phẩm gợi ý.</div>`}</div>
+        `;
+
+        els.detailBody.querySelectorAll('.copyBtn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            try{
+              await navigator.clipboard.writeText(btn.getAttribute('data-copy') || '');
+              const original = btn.textContent;
+              btn.textContent = 'Đã sao chép';
+              setTimeout(() => btn.textContent = original, 900);
+            }catch(e){
+              alert('Không thể sao chép (trình duyệt hạn chế clipboard).');
+            }
+          });
+        });
+      }
+
+      renderTabs();
+    }
+
+    function renderGlobalResults(){
+      if(!(state.searchAll && state.query.trim())){
+        els.globalResultsWrap.classList.add('hidden');
+        els.globalResults.innerHTML = '';
+        els.globalCount.textContent = '0 kết quả';
+        return;
+      }
+
+      const rs = globalSearchResults();
+      els.globalResultsWrap.classList.remove('hidden');
+      els.globalCount.textContent = `${rs.length} kết quả`;
+
+      if(!rs.length){
+        els.globalResults.innerHTML = `<div class="text-sm text-white/75">Không tìm thấy kết quả nào trên toàn bộ danh mục.</div>`;
+        return;
+      }
+
+      els.globalResults.innerHTML = rs.map((r, i) => {
+        return `
+          <button class="focus-ring w-full text-left rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 px-3 py-3" data-goto="${r.catKey}::${r.itemIdx}">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="text-xs text-white/70">${escapeHtml(r.catName)}</div>
+                <div class="font-bold">${escapeHtml(r.itemName)}</div>
+                <div class="mt-1 text-xs text-white/70">${escapeHtml(r.snippet)}</div>
+              </div>
+              <div class="text-xs text-green-200">Mở</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      els.globalResults.querySelectorAll('button[data-goto]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const [catKey, itemIdx] = (btn.getAttribute('data-goto') || '').split('::');
+          if(!DATA[catKey]) return;
+          state.activeCat = catKey;
+          state.activeItemIdx = Number(itemIdx);
+          state.activeTab = 'articles';
+          render();
+          scrollToMain();
+        });
+      });
+    }
+
+    function render(){
+      renderHeader();
+      renderItemList();
+      renderDetails();
+      renderGlobalResults();
+      renderTabs();
+      highlightActiveCategoryCard();
+    }
+
+    function highlightActiveCategoryCard(){
+      document.querySelectorAll('[data-cat]').forEach(btn => {
+        const isActive = btn.getAttribute('data-cat') === state.activeCat;
+        btn.style.boxShadow = isActive ? '0 0 0 3px rgba(34,197,94,.28), 0 20px 60px rgba(0,0,0,.35)' : '';
+        btn.style.transform = isActive ? 'translateY(-1px)' : '';
+      });
+    }
+
+    function escapeHtml(str){
+      return (str ?? '').toString()
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#039;');
+    }
+    function escapeHtmlAttr(str){
+      return escapeHtml(str).replaceAll('\n',' ');
+    }
+
+    // Events
+    document.querySelectorAll('[data-cat]').forEach(btn => {
+      btn.addEventListener('click', () => setActiveCat(btn.getAttribute('data-cat')));
+    });
+
+    els.tabArticles.addEventListener('click', () => setTab('articles'));
+    els.tabProducts.addEventListener('click', () => setTab('products'));
+
+    els.q.addEventListener('input', () => {
+      state.query = els.q.value;
+      render();
+    });
+    els.searchAll.addEventListener('change', () => {
+      state.searchAll = els.searchAll.checked;
+      renderGlobalResults();
+    });
+
+    els.btnReset.addEventListener('click', () => {
+      els.q.value = '';
+      state.query = '';
+      render();
+      els.q.focus();
+    });
+
+    els.btnRandom.addEventListener('click', () => {
+      const cats = Object.keys(DATA);
+      const catKey = cats[Math.floor(Math.random()*cats.length)];
+      const cat = DATA[catKey];
+      const idx = Math.floor(Math.random()*cat.items.length);
+      state.activeCat = catKey;
+      state.activeItemIdx = idx;
+      state.activeTab = Math.random() > 0.5 ? 'articles' : 'products';
+      render();
+      scrollToMain();
+    });
+
+    // Init
+    render();
+  </script>
+</body>
+</html>
